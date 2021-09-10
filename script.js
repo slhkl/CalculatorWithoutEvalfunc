@@ -21,7 +21,7 @@ function DeleteAll() {
     i = 0;
     display.innerHTML = "0";
     isOpEnough = true;
-    stopIt = false;
+    stopIt = true;
 }
 
 function Calculator(element) {
