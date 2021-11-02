@@ -83,7 +83,19 @@ html {
     font-size: 60px;
     line-height: 60px;
     margin: 0 25px;
-    
+  }
+  #old-display {
+    width: 150px;
+    float: left;
+    padding: 0;
+    box-sizing: border-box;
+    border: none;
+    background: none;
+    color: #303841;
+    text-align: right;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 30px;
   }
   
   .red {

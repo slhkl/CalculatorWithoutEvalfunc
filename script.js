@@ -1,97 +1,109 @@
 const display = document.getElementById("display-screen");
-var displayScreen = "";
+const oldDisplay = document.getElementById("old-display");
 var displayStr = "";
-var displayArr = [];
-let i = 0;
 let result;
-let operator;
-let isOpEnough = true;
-let stopIt = true;
+let array;
+let stopIt = false;
+display.value = "0";
 
+display.addEventListener("keydown", function (event) {
+    if (event.key == "%" || event.key == "/" || event.key == "-" || event.key == "+" || event.key == "*") {
+        Calculator(event.key.toString())
+    } 
+    else if(event.key % 1 ==0 || event.key==".") {
+        AddNumber(event.key.toString())
+    } 
+    else if(event.key == "=" || event.keyCode==13) {
+        Result();
+    }
+    else if(event.keyCode==8) {
+        if (displayStr.slice(-1) == "%" || displayStr.slice(-1) == "*" || displayStr.slice(-1) == "/" || displayStr.slice(-1) == "+" || displayStr.slice(-1) == "-") {
+            stopIt=false;
+        }
+        displayStr=displayStr.slice(0,-1);
+    }
+})
+display.addEventListener("keyup", function() {
+    display.value=displayStr;
+})
 function AddNumber(element) {
+    if(displayStr.slice(-1)=="." && element==".") {
+
+    } else {
     displayStr += element.toString();
-    displayScreen = displayScreen.concat(element);
-    display.innerHTML = displayScreen;
+    display.value = displayStr;   
+    }
 }
 
 function DeleteAll() {
-    displayStr = displayStr.replace(displayStr, "");
-    displayScreen = displayScreen.replace(displayScreen, "");
-    displayArr = [];
-    i = 0;
-    display.innerHTML = "0";
-    isOpEnough = true;
-    stopIt = true;
+    displayStr = "";
+    display.value = "0";
+    oldDisplay.innerHTML = "";
+    result = "";
+    stopIt = false;
 }
 
 function Calculator(element) {
-    if (displayScreen.slice(-1) == "%" || displayScreen.slice(-1) == "*" || displayScreen.slice(-1) == "/" || displayScreen.slice(-1) == "+" || displayScreen.slice(-1) == "-") {
-        if (element == "-" && stopIt) {
-            stopIt = false;
-            displayStr += element;
-            displayScreen = displayScreen.concat(element)
-            display.innerHTML = displayScreen;
-        }
-    } else if (element == "-" && displayStr.length < 1) {
+    displayStr = displayStr.toString();
+    if (displayStr == "") { }
+    else if(displayStr.slice(-1) == "%" || displayStr.slice(-1) == "*" || displayStr.slice(-1) == "/" || displayStr.slice(-1) == "+" || displayStr.slice(-1) == "-")  {
+        displayStr = displayStr.slice(0,-1);
+        displayStr+=element;
+        display.value=displayStr;
+    }
+    else if (stopIt) { }
+    else if (displayStr.slice(-1) != "%" && displayStr.slice(-1) != "*" && displayStr.slice(-1) != "/" && displayStr.slice(-1) != "+" && displayStr.slice(-1) != "-") {
         displayStr += element;
-        displayScreen = displayScreen.concat(element)
-        display.innerHTML = displayScreen;
-    } else if (displayScreen == "") { }
-
-    else if (isOpEnough) {
-        displayArr[i] = displayStr;
-        i += 1;
-        displayStr = displayStr.replace(displayStr, "");
-        displayArr[i] = element;
-        i += 1;
-        displayScreen = displayScreen.concat(element)
-        display.innerHTML = displayScreen;
-        isOpEnough = false;
+        display.value = displayStr;
+        stopIt = true;
     }
 }
 
 function Result() {
-    displayArr[i] = displayStr;
-    displayStr = displayStr.replace(displayStr, "");
-
-    if (displayArr.indexOf("%") >= 0) {
-        operator = displayArr.indexOf("%");
-    } else if (displayArr.indexOf("/") >= 0) {
-        operator = displayArr.indexOf("/");
-    } else if (displayArr.indexOf("*") >= 0) {
-        operator = displayArr.indexOf("*");
-    } else if (displayArr.indexOf("+") >= 0) {
-        operator = displayArr.indexOf("+");
-    } else if (displayArr.indexOf("-") >= 0) {
-        operator = displayArr.indexOf("-");
+    if (displayStr == "") {
+        display.value = 0;
     }
-    displayArr[operator - 1] = parseFloat(displayArr[operator - 1]);
-    displayArr[operator + 1] = parseFloat(displayArr[operator + 1]);
-
-    switch (displayArr[operator]) {
-        case "%":
-            result = displayArr[operator - 1] % displayArr[operator + 1];
-            break;
-        case "/":
-            result = displayArr[operator - 1] / displayArr[operator + 1];
-            break;
-        case "*":
-            result = displayArr[operator - 1] * displayArr[operator + 1];
-            break;
-        case "+":
-            result = displayArr[operator - 1] + displayArr[operator + 1];
-            break;
-        case "-":
-            result = displayArr[operator - 1] - displayArr[operator + 1];
-            break;
-        default:
-            result;
+    else if (display.value == result) {
+        return;
     }
-    displayArr = [];
-    i = 0;
-    displayScreen = displayScreen.concat("=", result);
-    display.innerHTML = displayScreen;
-    displayScreen = displayScreen.replace(displayScreen, "");
-    isOpEnough = true;
-    stopIt = true;
+    else if (displayStr.includes("+")) {
+        array = displayStr.split("+");
+        result = parseFloat(array[0]) + parseFloat(array[1])
+        oldDisplay.innerHTML = displayStr;
+        displayStr = result;
+        display.value = displayStr;
+        stopIt = false;
+    }
+    else if (displayStr.includes("*")) {
+        array = displayStr.split("*");
+        result = parseFloat(array[0]) * parseFloat(array[1])
+        oldDisplay.innerHTML = displayStr;
+        displayStr = result;
+        display.value = displayStr;
+        stopIt = false;
+    }
+    else if (displayStr.includes("/")) {
+        array = displayStr.split("/");
+        result = parseFloat(array[0]) / parseFloat(array[1])
+        oldDisplay.innerHTML = displayStr;
+        displayStr = result;
+        display.value = displayStr;
+        stopIt = false;
+    }
+    else if (displayStr.includes("%")) {
+        array = displayStr.split("%");
+        result = parseFloat(array[0]) % parseFloat(array[1])
+        oldDisplay.innerHTML = displayStr;
+        displayStr = result;
+        display.value = displayStr;
+        stopIt = false;
+    }
+    else if (displayStr.includes("-")) {
+        array = displayStr.split("-");
+        result = parseFloat(array[0]) - parseFloat(array[1])
+        oldDisplay.innerHTML = displayStr;
+        displayStr = result;
+        display.value = displayStr;
+        stopIt = false;
+    }
 }
